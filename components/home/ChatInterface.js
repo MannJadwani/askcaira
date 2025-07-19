@@ -97,7 +97,8 @@ export default function ChatInterface({ file, onBack }) {
         type: 'assistant',
         content: result.response,
         timestamp: new Date(),
-        hasVisualization: result.hasVisualization
+        hasVisualization: result.hasVisualization,
+        visualizationHTML: result.extractedHTML
       };
 
       setMessages(prev => [...prev, aiResponse]);
@@ -127,11 +128,11 @@ export default function ChatInterface({ file, onBack }) {
   };
 
   const suggestedQuestions = [
-    "What are the key trends in my data?",
-    "Show me summary statistics",
-    "Are there any outliers?",
-    "What correlations exist between columns?",
-    "Generate insights from this dataset"
+    "What does this data tell us?",
+    "Show me a chart of the key trends",
+    "What are the most important insights?",
+    "Create a visualization of the patterns",
+    "What correlations exist in this data?"
   ];
 
   return (
@@ -188,6 +189,31 @@ export default function ChatInterface({ file, onBack }) {
                 <p className="text-white leading-relaxed whitespace-pre-wrap">
                   {message.content}
                 </p>
+                
+                {/* Show visualization indicator for assistant messages */}
+                {message.type === 'assistant' && message.hasVisualization && message.visualizationHTML && (
+                  <div className="mt-4 p-3 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                      <span className="text-cyan-300 text-sm font-medium">📊 Visualization Generated</span>
+                    </div>
+                    <p className="text-cyan-200 text-xs">A new interactive chart has been created based on your data. Switch to the Visualization tab to see the full interactive chart.</p>
+                    
+                    {/* Mini preview iframe */}
+                    <div className="mt-2 h-48 bg-black/20 rounded border border-white/10 overflow-hidden">
+                      <iframe
+                        srcDoc={message.visualizationHTML}
+                        className="w-full h-full border-0 pointer-events-none"
+                        title="Visualization Preview"
+                        sandbox="allow-scripts allow-same-origin"
+                        style={{ transform: 'scale(0.4)', transformOrigin: 'top left', width: '250%', height: '250%' }}
+                      />
+                    </div>
+                  </div>
+                )}
+                
                 <div className="mt-2 text-xs text-gray-500">
                   {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </div>
@@ -214,7 +240,7 @@ export default function ChatInterface({ file, onBack }) {
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                   </div>
-                  <span className="text-gray-400 text-sm">Analyzing your data...</span>
+                  <span className="text-gray-400 text-sm">Analyzing your data with AI...</span>
                 </div>
               </GlassCard>
             </div>

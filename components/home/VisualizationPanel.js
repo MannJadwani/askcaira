@@ -84,72 +84,112 @@ export default function VisualizationPanel({ file, onBack }) {
         <!DOCTYPE html>
         <html>
         <head>
-          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
           <style>
             body { 
               margin: 0; 
               padding: 20px; 
-              background: transparent; 
-              color: white; 
-              font-family: Inter, sans-serif; 
+              background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #000000 100%);
+              color: #ffffff; 
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              min-height: 100vh;
+            }
+            .container {
+              max-width: 1200px;
+              margin: 0 auto;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(15px);
+              -webkit-backdrop-filter: blur(15px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 24px;
+              margin-bottom: 20px;
+              box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
             }
             .chart-container { 
               width: 100%; 
               height: 500px; 
+              background: rgba(0, 0, 0, 0.2);
+              border-radius: 8px;
+              border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            h1, h2, h3 {
+              color: #ffffff;
+              margin-bottom: 16px;
+              text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
             }
           </style>
-      </head>
-      <body>
-        <div class="chart-container" id="chart"></div>
-        <script>
-          // Sample data - this would be generated from actual file data
-          const trace1 = {
-            x: ['Q1', 'Q2', 'Q3', 'Q4'],
-            y: [20, 14, 23, 25],
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: 'Revenue',
-            line: { color: '#00d4ff', width: 3 },
-            marker: { color: '#00d4ff', size: 8 }
-          };
-          
-          const trace2 = {
-            x: ['Q1', 'Q2', 'Q3', 'Q4'],
-            y: [16, 18, 17, 19],
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: 'Costs',
-            line: { color: '#10b981', width: 3 },
-            marker: { color: '#10b981', size: 8 }
-          };
-          
-          const layout = {
-            title: {
-              text: 'Data Analysis for ${file.name}',
-              font: { color: 'white', size: 18 }
-            },
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            xaxis: { 
-              color: 'white',
-              gridcolor: 'rgba(255,255,255,0.1)'
-            },
-            yaxis: { 
-              color: 'white',
-              gridcolor: 'rgba(255,255,255,0.1)'
-            },
-            legend: { 
-              font: { color: 'white' }
-            }
-          };
-          
-          Plotly.newPlot('chart', [trace1, trace2], layout, {
-            responsive: true,
-            displayModeBar: false
-          });
-        </script>
-      </body>
-      </html>
+        </head>
+        <body>
+          <div class="container">
+            <div class="glass-card">
+              <h2>Data Analysis for ${file.name}</h2>
+              <div class="chart-container" id="chart"></div>
+            </div>
+          </div>
+          <script>
+            // Sample data - this would be generated from actual file data
+            const trace1 = {
+              x: ['Q1', 'Q2', 'Q3', 'Q4'],
+              y: [20, 14, 23, 25],
+              type: 'scatter',
+              mode: 'lines+markers',
+              name: 'Revenue',
+              line: { color: '#00d4ff', width: 3 },
+              marker: { color: '#00d4ff', size: 8 }
+            };
+            
+            const trace2 = {
+              x: ['Q1', 'Q2', 'Q3', 'Q4'],
+              y: [16, 18, 17, 19],
+              type: 'scatter',
+              mode: 'lines+markers',
+              name: 'Costs',
+              line: { color: '#10b981', width: 3 },
+              marker: { color: '#10b981', size: 8 }
+            };
+            
+            const layout = {
+              title: {
+                text: 'Sample Analysis - ${file.name}',
+                font: { color: '#ffffff', size: 20 },
+                x: 0.5
+              },
+              paper_bgcolor: 'rgba(0,0,0,0)',
+              plot_bgcolor: 'rgba(0,0,0,0.2)',
+              xaxis: { 
+                color: '#ffffff',
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              yaxis: { 
+                color: '#ffffff',
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              legend: { 
+                font: { color: '#ffffff' },
+                bgcolor: 'rgba(255,255,255,0.05)',
+                bordercolor: 'rgba(255,255,255,0.1)',
+                borderwidth: 1
+              },
+              font: {
+                family: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
+                color: '#ffffff'
+              }
+            };
+            
+            Plotly.newPlot('chart', [trace1, trace2], layout, {
+              responsive: true,
+              displayModeBar: false
+            });
+          </script>
+        </body>
+        </html>
       `;
     }
     
@@ -220,13 +260,15 @@ export default function VisualizationPanel({ file, onBack }) {
         type: 'assistant',
         content: result.response,
         timestamp: new Date(),
-        hasVisualization: result.hasVisualization
+        hasVisualization: result.hasVisualization,
+        visualizationHTML: result.extractedHTML
       };
 
       setMessages(prev => [...prev, aiResponse]);
 
       // Update visualization if the response contains HTML
       if (result.hasVisualization && result.extractedHTML) {
+        console.log('🎨 New visualization generated, updating display');
         setVisualizationHtml(result.extractedHTML);
       }
       
@@ -247,33 +289,67 @@ export default function VisualizationPanel({ file, onBack }) {
   };
 
   const updateVisualization = (type) => {
-    // Simulate different chart types - this would come from Gemini API
+    // Chart templates with glassmorphic styling
     const chartHtmlTemplates = {
       bar: `
         <!DOCTYPE html>
         <html>
         <head>
-          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
           <style>
-            body { margin: 0; padding: 20px; background: transparent; color: white; font-family: Inter, sans-serif; }
-            .chart-container { width: 100%; height: 500px; }
+            body { 
+              margin: 0; 
+              padding: 20px; 
+              background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #000000 100%);
+              color: #ffffff; 
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              min-height: 100vh;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(15px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 24px;
+              box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            }
           </style>
         </head>
         <body>
-          <div class="chart-container" id="chart"></div>
+          <div class="glass-card">
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+          </div>
           <script>
             const trace = {
               x: ['Q1', 'Q2', 'Q3', 'Q4'],
               y: [20, 14, 23, 25],
               type: 'bar',
-              marker: { color: '#00d4ff' }
+              marker: { 
+                color: '#00d4ff',
+                line: { color: '#3b82f6', width: 1 }
+              }
             };
             const layout = {
-              title: { text: 'Bar Chart View', font: { color: 'white' } },
+              title: { 
+                text: 'Bar Chart View', 
+                font: { color: '#ffffff', size: 18 },
+                x: 0.5
+              },
               paper_bgcolor: 'rgba(0,0,0,0)',
-              plot_bgcolor: 'rgba(0,0,0,0)',
-              xaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' },
-              yaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' }
+              plot_bgcolor: 'rgba(0,0,0,0.2)',
+              xaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              yaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              font: { family: 'Inter', color: '#ffffff' }
             };
             Plotly.newPlot('chart', [trace], layout, { responsive: true, displayModeBar: false });
           </script>
@@ -284,26 +360,49 @@ export default function VisualizationPanel({ file, onBack }) {
         <!DOCTYPE html>
         <html>
         <head>
-          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
           <style>
-            body { margin: 0; padding: 20px; background: transparent; color: white; font-family: Inter, sans-serif; }
-            .chart-container { width: 100%; height: 500px; }
+            body { 
+              margin: 0; 
+              padding: 20px; 
+              background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #000000 100%);
+              color: #ffffff; 
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              min-height: 100vh;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(15px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 24px;
+              box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            }
           </style>
         </head>
         <body>
-          <div class="chart-container" id="chart"></div>
+          <div class="glass-card">
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+          </div>
           <script>
             const trace = {
               values: [35, 25, 20, 20],
               labels: ['Category A', 'Category B', 'Category C', 'Category D'],
               type: 'pie',
-              marker: { colors: ['#00d4ff', '#10b981', '#3b82f6', '#8b5cf6'] }
+              marker: { colors: ['#00d4ff', '#10b981', '#3b82f6', '#a855f7'] },
+              textfont: { color: '#ffffff' }
             };
             const layout = {
-              title: { text: 'Distribution Breakdown', font: { color: 'white' } },
+              title: { 
+                text: 'Distribution Breakdown', 
+                font: { color: '#ffffff', size: 18 },
+                x: 0.5
+              },
               paper_bgcolor: 'rgba(0,0,0,0)',
               plot_bgcolor: 'rgba(0,0,0,0)',
-              font: { color: 'white' }
+              font: { family: 'Inter', color: '#ffffff' }
             };
             Plotly.newPlot('chart', [trace], layout, { responsive: true, displayModeBar: false });
           </script>
@@ -314,14 +413,32 @@ export default function VisualizationPanel({ file, onBack }) {
         <!DOCTYPE html>
         <html>
         <head>
-          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
           <style>
-            body { margin: 0; padding: 20px; background: transparent; color: white; font-family: Inter, sans-serif; }
-            .chart-container { width: 100%; height: 500px; }
+            body { 
+              margin: 0; 
+              padding: 20px; 
+              background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #000000 100%);
+              color: #ffffff; 
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              min-height: 100vh;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(15px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 24px;
+              box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            }
           </style>
         </head>
         <body>
-          <div class="chart-container" id="chart"></div>
+          <div class="glass-card">
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+          </div>
           <script>
             const trace = {
               x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -331,11 +448,24 @@ export default function VisualizationPanel({ file, onBack }) {
               marker: { color: '#00d4ff', size: 12 }
             };
             const layout = {
-              title: { text: 'Correlation Analysis', font: { color: 'white' } },
+              title: { 
+                text: 'Correlation Analysis', 
+                font: { color: '#ffffff', size: 18 },
+                x: 0.5
+              },
               paper_bgcolor: 'rgba(0,0,0,0)',
-              plot_bgcolor: 'rgba(0,0,0,0)',
-              xaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' },
-              yaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' }
+              plot_bgcolor: 'rgba(0,0,0,0.2)',
+              xaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              yaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              font: { family: 'Inter', color: '#ffffff' }
             };
             Plotly.newPlot('chart', [trace], layout, { responsive: true, displayModeBar: false });
           </script>
@@ -346,14 +476,32 @@ export default function VisualizationPanel({ file, onBack }) {
         <!DOCTYPE html>
         <html>
         <head>
-          <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
           <style>
-            body { margin: 0; padding: 20px; background: transparent; color: white; font-family: Inter, sans-serif; }
-            .chart-container { width: 100%; height: 500px; }
+            body { 
+              margin: 0; 
+              padding: 20px; 
+              background: linear-gradient(135deg, #111827 0%, #0f172a 50%, #000000 100%);
+              color: #ffffff; 
+              font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+              min-height: 100vh;
+            }
+            .glass-card {
+              background: rgba(255, 255, 255, 0.05);
+              backdrop-filter: blur(15px);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 12px;
+              padding: 24px;
+              box-shadow: 0 0 20px rgba(0, 212, 255, 0.1);
+            }
           </style>
         </head>
         <body>
-          <div class="chart-container" id="chart"></div>
+          <div class="glass-card">
+            <div id="chart" style="width: 100%; height: 500px;"></div>
+          </div>
           <script>
             const normal = {
               x: [1, 2, 3, 4, 5, 6, 7, 8],
@@ -372,12 +520,29 @@ export default function VisualizationPanel({ file, onBack }) {
               marker: { color: '#ef4444', size: 14, symbol: 'diamond' }
             };
             const layout = {
-              title: { text: 'Outlier Detection', font: { color: 'white' } },
+              title: { 
+                text: 'Outlier Detection', 
+                font: { color: '#ffffff', size: 18 },
+                x: 0.5
+              },
               paper_bgcolor: 'rgba(0,0,0,0)',
-              plot_bgcolor: 'rgba(0,0,0,0)',
-              xaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' },
-              yaxis: { color: 'white', gridcolor: 'rgba(255,255,255,0.1)' },
-              legend: { font: { color: 'white' } }
+              plot_bgcolor: 'rgba(0,0,0,0.2)',
+              xaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              yaxis: { 
+                color: '#ffffff', 
+                gridcolor: 'rgba(255,255,255,0.1)',
+                tickfont: { color: '#ffffff' }
+              },
+              legend: { 
+                font: { color: '#ffffff' },
+                bgcolor: 'rgba(255,255,255,0.05)',
+                bordercolor: 'rgba(255,255,255,0.1)'
+              },
+              font: { family: 'Inter', color: '#ffffff' }
             };
             Plotly.newPlot('chart', [normal, outliers], layout, { responsive: true, displayModeBar: false });
           </script>
@@ -413,11 +578,11 @@ export default function VisualizationPanel({ file, onBack }) {
   }, [iframeSrc]);
 
   const suggestedQuestions = [
-    "Create a bar chart of this data",
-    "Show me outliers in red",
-    "Generate a pie chart breakdown", 
-    "What correlations do you see?",
-    "Create an interactive scatter plot"
+    "Create a new chart showing trends",
+    "What patterns do you see in this data?", 
+    "Generate a correlation analysis",
+    "Show me the data distribution",
+    "Find outliers and create a visualization"
   ];
 
   return (
@@ -487,8 +652,8 @@ export default function VisualizationPanel({ file, onBack }) {
 
         {/* Visualization Area */}
         <div className="flex-1 p-6 h-[calc(100vh-140px)]">
-          <GlassCard className="h-full p-6 rounded-xl">
-            <div className="h-full bg-black/20 rounded-lg border border-white/10 overflow-hidden">
+          <GlassCard className="h-full p-0 rounded-xl overflow-hidden">
+            <div className="h-full bg-black/20 rounded-lg border border-white/10">
               {visualizationHtml ? (
                 <iframe
                   ref={iframeRef}
@@ -499,7 +664,7 @@ export default function VisualizationPanel({ file, onBack }) {
                 />
               ) : (
                 /* Loading State */
-                <div className="h-full flex items-center justify-center">
+                <div className="h-full flex items-center justify-center p-6">
                   <div className="text-center space-y-4">
                     <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl flex items-center justify-center mx-auto animate-pulse">
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -546,6 +711,18 @@ export default function VisualizationPanel({ file, onBack }) {
                       : 'bg-white/5 border border-white/10 text-white'
                   }`}>
                     {message.content}
+                    
+                    {/* Show visualization indicator for assistant messages */}
+                    {message.type === 'assistant' && message.hasVisualization && (
+                      <div className="mt-2 pt-2 border-t border-white/10">
+                        <div className="flex items-center space-x-1">
+                          <svg className="w-3 h-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                          <span className="text-cyan-400 text-xs">📊 Chart updated</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -563,7 +740,7 @@ export default function VisualizationPanel({ file, onBack }) {
                         <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
                         <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
                       </div>
-                      <span className="text-xs text-gray-400">Analyzing...</span>
+                      <span className="text-xs text-gray-400">AI analyzing your data...</span>
                     </div>
                   </div>
                 </div>
